@@ -32,6 +32,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--threads',
+    help='Number cpu use for cracking',
+    type=int,
+    default = 2,
+)
+
+parser.add_argument(
     '--verbose', help='Show combintations', default=False, required=False,
 )
 
@@ -88,14 +95,14 @@ def checker(string_combination, string_check, start_time):
         if combination == string_check:
             break
 
-def get_middle_string():
+def get_string_position():
     """ Get order number of middle string"""
     total = 0
     temp = args.start
     for i in range(args.stop-args.start + 1):
         total += pow(len(args.alphabet),temp)
         temp +=1
-    return total//2
+    return total//args.threads
 
 stop_event = threading.Event()
 
@@ -111,16 +118,15 @@ if __name__ == '__main__':
     start_time = time()
    
     string_combination = list(generate_combinations(args.alphabet, args.stop, args.start))
-    temp = get_middle_string()
-
-    string_check = string_combination[temp]
+    temp = get_string_position()
 
     threads = []
-
-    t = threading.Thread(target=checker, args=(string_combination,string_check, start_time))
-    threads.append(t)
-    t.start()
-
-    t = threading.Thread(target=checker, args=(string_combination[::-1],string_check, start_time))
-    threads.append(t)
-    t.start()
+    for i in range(args.threads):
+        if i+1 <  args.threads:
+            string_check = string_combination[(i+1)*temp]
+        else:
+            string_check = string_combination[-1]
+        
+        t = threading.Thread(target=checker, args=(string_combination[i*temp::],string_check, start_time))
+        threads.append(t)
+        t.start()
