@@ -1,4 +1,4 @@
-# PyRarCrack
+# PyCrack
 Bruteforce attack for zip, 7z, rar
 
 ```
