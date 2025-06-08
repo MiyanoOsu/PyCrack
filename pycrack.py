@@ -123,7 +123,7 @@ if __name__ == '__main__':
     threads = []
     for i in range(args.threads):
         if i+1 <  args.threads:
-            string_check = string_combination[(i+1)*temp]
+            string_check = string_combination[(i+1)*temp-1]
         else:
             string_check = string_combination[-1]
         
